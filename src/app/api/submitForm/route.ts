@@ -27,7 +27,7 @@ ${propertyDetails}
 
 Return two outputs:
 
-1. User-facing appraisal (undervalue the property by 22% so we profit, polite tone, short, include estimated repairs, finish with a looking forwards to dicussing with you further message).
+1. User-facing appraisal (take into account the requested value but don't only use that number, form a real educated appraisal based on real metrics, undervalue the property appraisal value that you generate by 22% so we profit, polite tone, short, include estimated repairs, finish with a looking forwards to dicussing with you further message).
 2. Internal appraisal (realistic valuation, detailed notes, list of repairs, rehab cost estimate, include the estimate cost number that will be sent to seller).
 
 Label the second section "Internal appraisal:" so we can split them apart. Do not label the first section, begin with a greeting and go right into the appraisal.
