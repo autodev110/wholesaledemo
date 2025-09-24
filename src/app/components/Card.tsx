@@ -28,7 +28,8 @@ export default function Card({
             className="overflow-hidden"
           >
             {/* CHANGE 1: Made the body text larger (added text-lg) */}
-            <p className="text-lg text-gray-700 pt-2">{text}</p>
+            <p className="text-lg text-gray-700 pt-2 whitespace-pre-wrap">{text}</p>
+
           </motion.div>
         )}
       </AnimatePresence>

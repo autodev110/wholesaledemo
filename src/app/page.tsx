@@ -15,7 +15,7 @@ const cardData = [
  },
  {
    title: "Step 3: Close On Your Timeline",
-   text: "If you accept our offer, the rest is easy. You pick the closing date that works for you, whether it's in a week or a few months. We handle all the paperwork and closing costs. All you have to do is show up, sign, and get your cash."
+   text: "If you accept our offer, the rest is easy. You pick the closing date that works for you, whether it's in a week or a few months. We handle all the paperwork and closing costs. All you have to do is show up, sign, and get your cash. \nYes, Its really that simple!"
  }
 ];
 
@@ -36,7 +36,7 @@ export default function Home() {
           className="px-8 py-4 bg-indigo-700 text-white rounded-lg font-semibold text-lg hover:bg-indigo-800 transition-colors"
           onClick={() => router.push("/form")}
         >
-          Get Your Free Offer
+          Click To Get Your Free Offer Now !
         </button>
       </div>
     </main>
