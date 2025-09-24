@@ -1,7 +1,7 @@
 // src/app/page.tsx
-"use client"; // Add this to use the router hook
+"use client";
 
-import { useRouter } from "next/navigation"; // Import the router
+import { useRouter } from "next/navigation";
 import ScrollingFeatureList from "./components/ScrollingFeatureList";
 
 const cardData = [
@@ -20,23 +20,29 @@ const cardData = [
 ];
 
 export default function Home() {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
 
   return (
     <main className="bg-gray-50">
-      <div className="h-48 flex items-center justify-center text-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <h1 className="text-5xl font-bold">Sell Your House, Stress-Free.</h1>
+      <div className="h-48 flex items-center justify-center text-center bg-gradient-to-b from-[#001429] to-[#002952]">
+        {/* Add 'inline-block' to fix the rendering issue */}
+        <h1 className="text-5xl font-extrabold">
+          <span className="bg-gradient-to-r from-[#dc6601] via-[#f5c77e] to-[#dc6601] bg-clip-text text-transparent">
+            Sell Your House, Stress-Free.
+          </span>
+        </h1>
       </div>
 
       <ScrollingFeatureList data={cardData} />
 
-      {/* CHANGE: Added a button to the bottom section */}
       <div className="min-h-screen flex flex-col items-center justify-center text-center">
         <button
-          className="px-8 py-4 bg-indigo-700 text-white rounded-lg font-semibold text-lg hover:bg-indigo-800 transition-colors"
+          className="rounded-lg font-semibold transition-transform hover:scale-105 bg-gradient-to-b from-[#001429] to-[#001f3d] px-16 py-8"
           onClick={() => router.push("/form")}
         >
-          Click To Get Your Free Offer Now !
+          <span className="text-3xl bg-gradient-to-r from-[#f5b858] via-[#f5c77e] to-[#f5b858] bg-clip-text text-transparent">
+            Click To Get Your Free Offer Now !
+          </span>
         </button>
       </div>
     </main>

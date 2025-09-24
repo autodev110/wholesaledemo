@@ -13,10 +13,11 @@ export default function Card({
   isExpanded: boolean;
 }) {
   return (
-    // CHANGE 3: Increased padding (p-6 to p-8) and centered all text (text-center)
-    <div className="bg-white rounded-xl shadow-md p-8 w-full mb-6 text-center">
-      {/* CHANGE 1: Made the title larger (text-xl to text-2xl) */}
-      <h2 className="text-2xl font-bold mb-2 text-gray-900">{title}</h2>
+    // 1. Replaced 'bg-white' with the navy gradient
+    // 2. Added the new text color 'text-[#f5c77e]'
+    <div className="bg-gradient-to-b from-[#001429] to-[#002952] text-[#f5c77e] rounded-xl shadow-md p-8 w-full mb-6 text-center">
+      {/* 3. Removed the old text color from the title */}
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
       
       <AnimatePresence initial={false}>
         {isExpanded && (
@@ -27,9 +28,8 @@ export default function Card({
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            {/* CHANGE 1: Made the body text larger (added text-lg) */}
-            <p className="text-lg text-gray-700 pt-2 whitespace-pre-wrap">{text}</p>
-
+            {/* 3. Removed the old text color from the body */}
+            <p className="text-lg pt-2 whitespace-pre-wrap">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>

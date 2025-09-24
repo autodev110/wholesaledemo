@@ -36,7 +36,8 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
 
   return (
     <section className="relative w-full py-12">
-      <div className="sticky top-0 z-10 h-48 flex items-center justify-center bg-gray-50 text-gray-900">
+      {/* The text color has been updated in this div */}
+      <div className="sticky top-0 z-10 h-48 flex items-center justify-center bg-gray-50 text-[#001429]">
         <h1 className="text-4xl font-bold text-center">
           Our Simple Process
         </h1>
@@ -44,7 +45,6 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
       
       <div className="relative">
         {data.map((card, index) => (
-          // The width is now set to 80% of the screen (w-4/5)
           <div 
             key={index} 
             ref={el => { featureRefs.current[index] = el; }}
