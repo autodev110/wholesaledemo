@@ -54,7 +54,7 @@ export default function PropertyForm() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-8 max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md"
+        className="space-y-8 max-w-3xl mx-auto bg-grey-500 p-8 rounded-xl shadow-md"
       >
         <h2 className="text-2xl font-bold text-center mb-6">
           Property Intake Form
