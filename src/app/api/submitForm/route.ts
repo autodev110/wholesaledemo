@@ -1,71 +1,74 @@
+// src/app/api/submitForm/route.ts
+
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import nodemailer from "nodemailer";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { scrapeRealtor } from "@/app/lib/scraper";
 
-// 🔹 Init Supabase
+
+// ... (keep your Supabase, Gemini, and runAI function initializations)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY! // use service key for server routes
+  process.env.SUPABASE_SERVICE_KEY!
 );
-
-// 🔹 Init Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-// or gemini-1.5-pro if you want higher quality (slower, more costly)
 
-// 🔹 AI function
-async function runAI(formData: any, propertyDetails: string) {
+
+// 🔹 AI function - NOW ENHANCED
+// in src/app/api/submitForm/route.ts
+
+async function runAI(formData: any, propertyDetails: object | string) {
+  const detailsString = typeof propertyDetails === 'object' && propertyDetails !== null
+    ? JSON.stringify(propertyDetails, null, 2)
+    : propertyDetails;
+
   const basePrompt = `
-You are a real estate appraisal assistant.
+You are a real estate investment analyst. Your task is to create a preliminary property valuation.
 
-Form data:
+**User Submitted Data:**
 ${JSON.stringify(formData, null, 2)}
 
-Public property info:
-${propertyDetails}
+**Scraped Public Property Info:**
+${detailsString}
 
-Return two outputs:
+---
+**INSTRUCTIONS**
 
-1. User-facing appraisal (take into account the requested value but don't only use that number, form a real educated appraisal based on real metrics, undervalue the property appraisal value that you generate by 22% so we profit, polite tone, short, include estimated repairs, finish with a looking forwards to dicussing with you further message).
-2. Internal appraisal (realistic valuation, detailed notes, list of repairs, rehab cost estimate, include the estimate cost number that will be sent to seller).
+First, generate the user-facing email content. It should be polite, professional, and encouraging. Calculate 78% of your estimated market value and present this result as the "estimated cash offer." **Do not mention the 78% percentage in this output.**
 
-Label the second section "Internal appraisal:" so we can split them apart. Do not label the first section, begin with a greeting and go right into the appraisal.
+Second, on a new line, generate the internal analysis. It MUST start with the exact label "Internal appraisal:". This section should contain your realistic market valuation, a list of repairs, cost estimates, and the final cash offer amount.
 `;
 
   const result = await model.generateContent(basePrompt);
   const text = result.response.text();
 
-  // Split into two outputs
-  const [userOutput, internalOutput] = text.split(/Internal appraisal/i);
+  const [userOutput, internalOutput] = text.split(/Internal appraisal:/i);
   return {
     userOutput: userOutput?.trim() || "Thanks for your submission. We will be in touch soon.",
-    internalOutput: internalOutput?.trim() || "No internal appraisal generated.",
+    // We add the label back in for the internal email to be clear
+    internalOutput: internalOutput?.trim() ? `Internal appraisal:\n${internalOutput.trim()}` : "No internal appraisal generated.",
   };
 }
 
-// 🔹 Temporary property lookup stub
-async function getPropertyDetails(address: string) {
-  // Replace with real Zillow/SerpAPI lookup later
-  return `Property at ${address}`;
-}
+// 🔹 REMOVE the old getPropertyDetails stub
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { captcha, ...formData } = body;
 
+    // ... (keep your captcha validation and Supabase insert logic)
     // 1. Validate captcha
     if (!captcha) {
       return NextResponse.json({ error: "Captcha missing" }, { status: 400 });
     }
-
     const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captcha}`,
     });
-
     const captchaData = await captchaRes.json();
     if (!captchaData.success) {
       return NextResponse.json({ error: "Captcha failed" }, { status: 400 });
@@ -78,10 +81,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // 3. Run AI analysis
-    const propertyDetails = await getPropertyDetails(formData.address);
-    const { userOutput, internalOutput } = await runAI(formData, propertyDetails);
 
+    // 3. Run SCRAPER and AI analysis
+    // 🔽 THIS IS THE NEW LOGIC 🔽
+    let propertyDetails;
+    try {
+      const fullAddress = formData.address;
+      // Change the function call
+      propertyDetails = await scrapeRealtor(fullAddress); // Formerly scrapeZillow
+      if (!propertyDetails) {
+        propertyDetails = "Scraping failed. Using only user-submitted data.";
+      }
+    } catch (scrapeError) {
+      console.error("Scraping function threw an error:", scrapeError);
+      propertyDetails = "An error occurred during scraping. Using only user-submitted data.";
+    }
+
+    const { userOutput, internalOutput } = await runAI(formData, propertyDetails);
+    // 🔼 END OF NEW LOGIC 🔼
+
+
+    // ... (keep your nodemailer email logic)
     // 4. Setup email transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -108,6 +128,7 @@ export async function POST(req: Request) {
         text: userOutput,
       });
     }
+
 
     return NextResponse.json({ message: "Form submitted successfully" });
   } catch (err: any) {
