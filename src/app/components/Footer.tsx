@@ -23,13 +23,13 @@ export default function Footer() {
         {/* Right Side: Contact Info */}
         <div className="text-right">
           <p>
-            <a href="mailto:contact@simplehomeoffer.org" className="hover:opacity-80 transition-opacity">
-              contact@simplehomeoffer.org
+            <a href="mailto:simplehomeoffer33@gmail.com" className="hover:opacity-80 transition-opacity">
+              simplehomeoffer33@gmail.com
             </a>
           </p>
           <p>
-            <a href="tel:+18005551234" className="hover:opacity-80 transition-opacity">
-              (800) 555-1234
+            <a href="tel:+(coming soon)" className="hover:opacity-80 transition-opacity">
+              +1 (856) 123-4567 (coming soon)
             </a>
           </p>
         </div>
