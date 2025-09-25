@@ -37,9 +37,9 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
   return (
     <section className="relative w-full ">
       {/* The text color has been updated in this div */}
-      <div className="sticky top-0 z-10 h-48 flex items-center justify-center bg-gray-50 text-[#001429]">
+      <div className="sticky top-0 z-10 h-18 flex items-center justify-center bg-gray-50 text-[#001429]">
         <h1 className="text-4xl font-bold text-center">
-          Our Simple Process
+          
         </h1>
       </div>
       

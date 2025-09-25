@@ -3,6 +3,9 @@
 
 import { useRouter } from "next/navigation";
 import ScrollingFeatureList from "./components/ScrollingFeatureList";
+import Image from "next/image"; // We still need the Image component
+
+// 1. The incorrect import for the logo has been removed from here.
 
 const cardData = [
  {
@@ -15,7 +18,7 @@ const cardData = [
  },
  {
    title: "Step 3: Close On Your Timeline",
-   text: "If you accept our offer, the rest is easy. You pick the closing date that works for you, whether it's in a week or a few months. We handle all the paperwork and closing costs. All you have to do is show up, sign, and get your cash. \nYes, Its really that simple!"
+   text: "If you accept our offer, the rest is easy. You pick the closing date that works for you, whether it's in a week or a few months. We handle all the paperwork and closing costs. All you have to do is show up, sign, and get your cash. Yes, Its really that simple!"
  }
 ];
 
@@ -24,20 +27,23 @@ export default function Home() {
 
   return (
     <main className="bg-gray-50">
-      <div className="h-48 flex items-center justify-center text-center bg-gradient-to-b from-[#001429] to-[#002952]">
-        {/* Add 'inline-block' to fix the rendering issue */}
-        <h1 className="text-5xl font-extrabold">
-          <span className="bg-gradient-to-r from-[#dc6601] via-[#f5c77e] to-[#dc6601] bg-clip-text text-transparent">
-            Sell Your House, Stress-Free.
-          </span>
-        </h1>
+      <div className="h-95 flex items-center justify-center text-center bg-gradient-to-b from-[#001429] to-[#002952]">
+        {/* 2. Added the required 'height' property */}
+        {/* For best results, find the actual height of your image file and use it here. */}
+        <Image
+          src="/images/sho_trans.png"
+          alt="Simple Home Offer Logo"
+          width={850}
+          height={150} // Added the height property
+          priority
+        />
       </div>
 
       <ScrollingFeatureList data={cardData} />
 
       <div className="min-h-screen flex flex-col items-center justify-center text-center">
         <button
-          className="rounded-lg font-semibold transition-transform hover:scale-105 bg-gradient-to-b from-[#001429] to-[#001f3d] px-16 py-8"
+          className="rounded-lg font-semibold transition-transform hover:scale-115 bg-gradient-to-b from-[#001429] to-[#001f3d] px-16 py-8"
           onClick={() => router.push("/form")}
         >
           <span className="text-3xl bg-gradient-to-r from-[#f5b858] via-[#f5c77e] to-[#f5b858] bg-clip-text text-transparent">
