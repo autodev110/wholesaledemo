@@ -3,7 +3,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import Card from "./Card";
-
+// Import the new hook
+import { useMobileDetection } from "./hooks/useMobileDetection"; 
 type CardData = {
   title: string;
   text: string;
@@ -12,8 +13,17 @@ type CardData = {
 export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const featureRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  // 1. Use the mobile detection hook
+  const isMobile = useMobileDetection();
 
   useEffect(() => {
+    // 2. Only run the scroll logic if it's NOT a mobile device
+    if (isMobile) {
+        // If mobile, don't track scroll state, and immediately return.
+        return; 
+    }
+
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       
@@ -32,14 +42,13 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [isMobile]); // Re-run effect when isMobile changes
 
   return (
     <section className="relative w-full ">
-      {/* The text color has been updated in this div */}
       <div className="sticky top-0 z-10 h-18 flex items-center justify-center bg-gray-50 text-[#001429]">
         <h1 className="text-4xl font-bold text-center">
-          
+          {/* You might want to add a title here */}
         </h1>
       </div>
       
@@ -48,12 +57,15 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
           <div 
             key={index} 
             ref={el => { featureRefs.current[index] = el; }}
-            className="min-h-[60vh] w-4/5 mx-auto"
+            // We use 'min-h-[60vh]' to create the scroll effect. 
+            // We can reduce this height substantially on mobile to make the list flow better.
+            className={isMobile ? "w-4/5 mx-auto py-4" : "min-h-[60vh] w-4/5 mx-auto"}
           >
             <Card
               title={card.title}
               text={card.text}
-              isExpanded={activeIndex === index}
+              // 3. The critical change: force true if on mobile, otherwise use the scroll state
+              isExpanded={isMobile || activeIndex === index}
             />
           </div>
         ))}
