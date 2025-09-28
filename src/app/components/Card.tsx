@@ -13,9 +13,14 @@ export default function Card({
   isExpanded: boolean;
 }) {
   return (
-    // The padding has been increased here from p-8 to p-12
-    <div className="bg-gradient-to-b from-[#001429] to-[#002952] text-[#f5c77e] rounded-xl shadow-md p-16 w-full mb-6 text-center">
-      <h2 className="text-4xl font-bold mb-2">{title}</h2>
+    // Adjust padding to be smaller on mobile (p-8) and larger on medium screens and up (md:p-16)
+    <div className="bg-gradient-to-b from-[#001429] to-[#002952] text-[#f5c77e] rounded-xl shadow-md p-8 md:p-16 w-full mb-6 text-center">
+      
+      {/* H2 Class Breakdown:
+        - text-2xl: Default text size for mobile (smaller than original 4xl)
+        - md:text-4xl: Increase text size to 4xl for medium screens and up (your original desktop size)
+      */}
+      <h2 className="text-2xl md:text-4xl font-bold mb-2">{title}</h2>
       
       <AnimatePresence initial={false}>
         {isExpanded && (
@@ -26,7 +31,11 @@ export default function Card({
             transition={{ duration: 0.4, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="text-2xl pt-3 whitespace-pre-wrap">{text}</p>
+            {/* P Class Breakdown:
+              - text-base: Default text size for mobile (smaller than original 2xl)
+              - md:text-2xl: Increase text size to 2xl for medium screens and up
+            */}
+            <p className="text-base md:text-2xl pt-3 whitespace-pre-wrap">{text}</p>
           </motion.div>
         )}
       </AnimatePresence>

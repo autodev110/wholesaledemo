@@ -187,7 +187,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           </select>
 
           <label className="block text-gray-700 mb-1"> 
-            Any foundational issues? (describe)
+            Describe any foundational issues
           </label>
           <textarea
             name="foundation"
@@ -198,7 +198,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
 
             <label className="block text-gray-700 mb-1">
-            Electrical Issues? (describe)
+            Descibe any electrical issues
             </label>
             <textarea
             name="electrical"
@@ -208,7 +208,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
 
           <label className="block text-gray-700 mb-1">
-            Plumbing condition? (describe)
+            Describe the plumbing condition
           </label>
           <textarea
             name="plumbing_condition"
@@ -262,7 +262,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           />
 
             <label className="block text-gray-700 mb-1">
-            Enter the property size in sqft
+            Enter the property's size in square footage
             </label>
           <input
             type="number"
@@ -292,7 +292,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           />
 
             <label className="block text-gray-700 mb-1">
-            Enter the number of bedrooms
+            Enter the number of Bedrooms
             </label>
           <input
             type="number"
@@ -325,7 +325,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           />
 
             <label className="block text-gray-700 mb-1">
-            How many floors, basement, attic etc
+            How many floors? (mention basement, attic etc)
             </label>
           <input
             type="text"
@@ -416,7 +416,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             disabled={loading} // Only disabled while submitting
             className={`px-8 py-3 rounded-lg font-semibold transition ${
               !loading
-                ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md"
+                ? "bg-[#04315e] text-white hover:bg-[#03519e] shadow-md"
                 : "bg-gray-400 text-gray-700 cursor-not-allowed"
             }`}
           >
