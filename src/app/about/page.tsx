@@ -1,11 +1,13 @@
 // src/app/about/page.tsx
 import Card from "@/app/components/Card";
+import Image from "next/image";
+import Link from "next/link";
 
 // It's good practice to keep the card content in an array
 const aboutPageData = [
   {
     title: "About Us",
-    text: "Based right here in the heart of New Jersey, Simple Home Offer was founded by a team of local real estate professionals who saw a need for a simpler, more compassionate way to sell a home. We're your neighbors, not a faceless corporation. We've seen firsthand how the traditional market can be slow, unpredictable, and stressful for homeowners facing unique situations. Our goal is to provide a reliable alternative that puts you in control. We buy houses directly, in any condition, allowing you to bypass the repairs, showings, and lengthy waiting periods, and move forward with confidence and cash in hand."
+    text: "Simple Home Offer was founded by a team of real estate professionals who saw a need for a simpler, more compassionate way to sell a home. We're your neighbors, not a faceless corporation. We've seen firsthand how the traditional market can be slow, unpredictable, and stressful for homeowners facing unique situations. Our goal is to provide a reliable alternative that puts you in control. We buy houses directly, in any condition, allowing you to bypass the repairs, showings, and lengthy waiting periods, and move forward with confidence and cash in hand."
   },
   {
     title: "Mission & Values",
@@ -20,24 +22,25 @@ const aboutPageData = [
 export default function AboutPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Page Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-5xl mx-auto py-12 px-4 text-center">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Your Trusted Local Home Buyer
-          </h1>
-          <p className="mt-2 text-lg text-gray-600">
-            Learn more about our commitment to helping homeowners in our community.
-          </p>
-        </div>
-      </header>
+      {/* Page Header - Updated with clickable logo */}
+      <div className="h-95 flex items-center justify-center text-center bg-gradient-to-b from-[#001429] to-[#002952]">
+        <Link href="/" passHref>
+          <Image
+            src="/images/sho_trans.png"
+            alt="Simple Home Offer Logo"
+            width={850}
+            height={150}
+            priority
+            className="cursor-pointer"
+          />
+        </Link>
+      </div>
 
       {/* Main Content with Cards */}
       <main className="py-12 px-4">
         <div className="max-w-5xl mx-auto grid gap-8">
           {aboutPageData.map((card, index) => (
             <div key={index}>
-              {/* We reuse your existing Card component */}
               <Card 
                 title={card.title} 
                 text={card.text}

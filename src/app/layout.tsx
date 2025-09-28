@@ -26,14 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* 2. Add flexbox classes to the body tag, keeping your fonts */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        {/* 3. Wrap children in a <main> tag with flex-grow */}
         <main className="flex-grow">{children}</main>
-
-        {/* 4. Add the Footer component at the end */}
         <Footer />
       </body>
     </html>

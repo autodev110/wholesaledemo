@@ -40,7 +40,7 @@ export default function Footer() {
           </p>
           <p>
             <a href="tel:+(coming soon)" className="hover:opacity-80 transition-opacity">
-              +1 (856) 123-4567 (coming soon)
+              phone number coming soon
             </a>
           </p>
         </div>
