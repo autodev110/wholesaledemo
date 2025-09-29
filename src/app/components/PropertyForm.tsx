@@ -299,6 +299,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           <input /*new*/
             type="number"
             name="acreage"
+            step ="0.01"
             placeholder="property size in acres"
             onChange={handleChange}
             // ADDED: text-gray-900 and placeholder-gray-500 for consistency

@@ -13,7 +13,7 @@ const cardData = [
    text: "Fill out our simple, confidential online form with some basic details about your property. It takes less than two minutes, and there's no obligation. This gives us the information we need to start crafting your fair cash offer."
  },
  {
-   title: "Step 2: Get a Fair Offer",
+   title: "Step 2: Get Your Offer",
    text: "We'll review your property details and the current market conditions. Within 24 hours, we will contact you with a no-obligation, all-cash offer. We pride ourselves on transparency, so we'll walk you through exactly how we arrived at our number."
  },
  {

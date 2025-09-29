@@ -16,6 +16,10 @@ const aboutPageData = [
   {
     title: "Testimonials",
     text: "“After my father passed away, I inherited his home in Camden. Living out of state, the thought of managing repairs and a traditional sale was a nightmare. The team was incredible, honest, and we closed in two weeks.” – Michael R. \n\n “I was a tired landlord with a rental property in Cherry Hill that needed more work than I was willing to put in. They gave me a solid cash offer and took the property as-is. It was a huge weight off my shoulders.” – Linda P."
+  },
+  {
+    title: "Contact Us",
+    text: " Email: simplehomeoffer33@gmail.com\n Phone: (coming soon)"
   }
 ];
 
