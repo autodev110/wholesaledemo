@@ -1,4 +1,3 @@
-// /src/app/form/page.tsx
 "use client";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -10,6 +9,8 @@ export default function PropertyForm() {
   const [loading, setLoading] = useState(false);
   // const recaptchaRef = useRef<ReCAPTCHA>(null); // ⬅ Disabled temporarily
   const router = useRouter();
+
+  const BASE_INPUT_CLASSES = "w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500";
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -24,6 +25,8 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   // ✅ Require captcha before submitting
   if (!captchaToken) {
+    // IMPORTANT: Custom modal UI should be used instead of alert() in production apps.
+    // However, keeping alert() here as it was in the original code for immediate feedback.
     alert("Please complete the captcha before submitting.");
     return;
   }
@@ -45,11 +48,13 @@ const handleSubmit = async (e: React.FormEvent) => {
       );
     } else {
       const err = await res.json();
+      // IMPORTANT: Custom modal UI should be used instead of alert()
       alert("Error: " + err.error);
       setLoading(false);
     }
   } catch (error) {
     console.error("Submission failed:", error);
+    // IMPORTANT: Custom modal UI should be used instead of alert()
     alert("Something went wrong. Please try again.");
     setLoading(false);
   }
@@ -78,7 +83,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Full Name"
             required
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -87,7 +93,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Email"
             required
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -96,7 +103,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Phone Number"
             required
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -105,7 +113,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Address (House Number, Street)"
             required
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -113,7 +122,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="apartment"
             placeholder="Apartment / Suite (Optional)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <div className="grid grid-cols-2 gap-4">
@@ -123,7 +133,8 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="City"
               required
               onChange={handleChange}
-              className="border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+              // Uses BASE_INPUT_CLASSES, removes w-full since it's in a grid
+              className="border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500" 
             />
             <input
               type="text"
@@ -131,6 +142,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="State"
               required
               onChange={handleChange}
+              // Uses BASE_INPUT_CLASSES, removes w-full since it's in a grid
               className="border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
             />
           </div>
@@ -141,7 +153,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Zip Code"
             required
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500"
+            // Uses BASE_INPUT_CLASSES
+            className={BASE_INPUT_CLASSES}
           />
 
           <label className="block text-gray-700">
@@ -166,7 +179,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           <select
             name="roof_age"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={`${BASE_INPUT_CLASSES}`}
           >
             <option value="">Select...</option>
             <option>Less than 5 years</option>
@@ -179,7 +193,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           <select
             name="sewer_type"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={`${BASE_INPUT_CLASSES}`}
           >
             <option value="">Select...</option>
             <option>Public Sewer</option>
@@ -193,7 +208,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="foundation"
             placeholder="Describe any foundational issues"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
 
@@ -204,7 +220,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="electrical"
             placeholder="Describe any electrical issues"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
             />
 
           <label className="block text-gray-700 mb-1">
@@ -214,7 +231,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="plumbing_condition"
             placeholder="Plumbing Condition description"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
           <label className="block text-gray-700 mb-1">
@@ -223,7 +241,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           <select
             name="heating_fuel"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={BASE_INPUT_CLASSES}
           >
             <option value="">Select...</option>
             <option>Oil Heat</option>
@@ -241,7 +260,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           <select
             name="cooling_fuel"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={BASE_INPUT_CLASSES}
           >
             <option value="">Select...</option>
             <option>Window units</option>
@@ -258,7 +278,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="renovations"
             placeholder="Describe recent renovations or upgrades"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
             <label className="block text-gray-700 mb-1">
@@ -269,7 +290,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="sqft"
             placeholder="Square Footage"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
            <label className="block text-gray-700 mb-1">
             Enter the property's acreage
@@ -279,16 +301,20 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="acreage"
             placeholder="property size in acres"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
-            <label className="block text-gray-700 mb-1">
-            Describe the plumbing condition
-            </label>
-          <textarea 
-            name="plumbing_condition"
-            placeholder="Plumbing Condition description"
+
+          <label className="block text-gray-700 mb-1">
+            System Amperage
+          </label>
+          <input
+            type="text"
+            name="system_amperage"
+            placeholder="system amperage"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
             <label className="block text-gray-700 mb-1">
@@ -299,7 +325,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="beds"
             placeholder="Bedrooms"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
             <label className="block text-gray-700 mb-1">
@@ -311,7 +338,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="baths"
             placeholder="Bathrooms (e.g., 1.5)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
              <label className="block text-gray-700 mb-1">
              Year Built
@@ -321,7 +349,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="yearbuilt"
             placeholder="year built"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
             <label className="block text-gray-700 mb-1">
@@ -332,14 +361,16 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="number_of_floors"
             placeholder="Number of Floors"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
           <label className="block text-gray-700 mb-1">Occupancy Status</label>
           <select
             name="occupancy"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={BASE_INPUT_CLASSES}
           >
             <option value="">Select...</option>
             <option>Owner-occupied</option>
@@ -360,7 +391,8 @@ const handleSubmit = async (e: React.FormEvent) => {
           <select
             name="money_owed"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 class for consistency
+            className={BASE_INPUT_CLASSES}
           >
             <option value="">Select...</option>
             <option>Yes</option>
@@ -372,7 +404,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="owed_taxes"
             placeholder="Taxes Owed ($)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -380,7 +413,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="owed_liens"
             placeholder="Liens Owed ($)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -388,7 +422,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="owed_mortgage"
             placeholder="Mortgage Balance ($)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
 
           <input
@@ -396,7 +431,8 @@ const handleSubmit = async (e: React.FormEvent) => {
             name="timeline"
             placeholder="Timeline to Sell (e.g., ASAP, 3 months)"
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            // ADDED: text-gray-900 and placeholder-gray-500 for consistency
+            className={BASE_INPUT_CLASSES}
           />
         </fieldset>
 

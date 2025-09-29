@@ -105,6 +105,7 @@ function buildInputJson(formData: any, propertyDetails: any): AIInputSchema {
         /* New fields */
         acreage: formData.acreage,
         yearbuilt: formData.yearbuilt,
+        system_amperage: formData.system_amperage,
         /*------------------------------------------------*/
       },
       known_liens_and_mortgage: {
@@ -201,6 +202,7 @@ Your job:
 - Add lien survivability notes (Upset = liens survive, Judicial = free/clear, Sheriff = check, Private = standard).
 - Give a decision: "GO", "CONDITIONAL", or "NO_GO".
 - Rank risks with severity and mitigations.
+- Factor in property details, nearby school and neighborhood ratings, market trends, and economic conditions as relevant to your analysis as well.
 
 Format:
 Respond with a single JSON object only.
@@ -212,6 +214,7 @@ Keys:
 - decision
 - risks_ranked[]
 - lien_survivability_note
+- general overview (analysis summary paragraph)
 
 No extra commentary outside JSON.
 `;
