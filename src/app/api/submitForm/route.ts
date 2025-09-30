@@ -51,6 +51,7 @@ const sanitizePropertyData = (data: any) => {
     cooling: details.resoFacts?.cooling,
     parkingCapacity: details.resoFacts?.parkingCapacity,
     zillowUrl: data.zillowURL,
+    price: details.price,
   };
 };
 

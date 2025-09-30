@@ -30,6 +30,7 @@ interface AIInputSchema {
     lot_sqft: number;
     year_built: number;
     zestimate?: number;
+    list_price?: number;
     last_sale?: { date: string; price: number };
     seller_provided_condition: Record<string, string | number | boolean | undefined>;
     known_liens_and_mortgage: {
@@ -91,6 +92,7 @@ function buildInputJson(formData: any, propertyDetails: any): AIInputSchema {
       lot_sqft: safeNum(formData.lot_sqft, propertyDetails.lotSize_sqft),
       year_built: safeNum(formData.year_built, propertyDetails.yearBuilt),
       zestimate: safeNum(formData.zestimate, propertyDetails.zestimate, 0),
+      list_price: safeNum(propertyDetails.price, undefined, 0),
       last_sale: propertyDetails.lastSale?.price ? propertyDetails.lastSale : undefined,
       seller_provided_condition: {
         roof_age: formData.roof_age,
@@ -117,8 +119,8 @@ function buildInputJson(formData: any, propertyDetails: any): AIInputSchema {
     },
     cost_assumptions: {
       closing_costs: 10000,
-      wholesaler_min_profit: 50000,
-      end_buyer_target_margin_pct: 0.15,
+      wholesaler_min_profit: 40000,
+      end_buyer_target_margin_pct: 0.10,
     },
   };
 }
@@ -195,7 +197,7 @@ You are a disciplined real-estate wholesale underwriter for PA counties (expanda
 Evaluate properties from tax sales and direct seller leads.
 
 Your job:
-- Produce a defensible ARV from zestimate, last sale, and condition adjustments.
+- Produce a defensible ARV from zestimate, **current listing price** (if available), last sale (use lastly, try to avoid), and condition adjustments.
 - Estimate rehab costs as line-items (roof, electrical, plumbing, foundation, cosmetics, etc.) with contingency.
 - Compute Wholesale MAO: (ARV × (1 - margin)) - Rehab - Closing Costs - Payoffs. 
   Then Offer_to_Seller_Max = End Buyer MAO - Wholesaler Profit (≥ $50k).

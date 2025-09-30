@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,36 @@ export default function PropertyForm() {
   const router = useRouter();
 
   const BASE_INPUT_CLASSES = "w-full border border-gray-300 rounded px-3 py-2 text-gray-900 placeholder-gray-500";
+  const HIDE_NUMBER_SPINNER_CLASSES = "appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-inner-spin-button]:m-0";
+
+
+    //____________
+
+    // 🔑 NEW EFFECT: Disable mousewheel scrolling on number inputs
+  useEffect(() => {
+    // This function checks if thes currently focused element is a number input.
+    const handleWheel = (e: WheelEvent) => {
+      const activeElement = document.activeElement;
+      
+      // If an element is focused AND it is a number input, prevent the default scroll action.
+      if (activeElement && 
+          activeElement.tagName === 'INPUT' && 
+          (activeElement as HTMLInputElement).type === 'number') {
+        
+        // This stops the scroll event from changing the input value.
+        e.preventDefault(); 
+      }
+    };
+
+    // Attach the event listener to the entire window. Passive: false is critical to allow preventDefault().
+    window.addEventListener('wheel', handleWheel, { passive: false });
+
+    // Cleanup function: remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, []); // Run only once on mount
+//____________
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -291,7 +321,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="Square Footage"
             onChange={handleChange}
             // ADDED: text-gray-900 and placeholder-gray-500 for consistency
-            className={BASE_INPUT_CLASSES}
+            className={`${BASE_INPUT_CLASSES} ${HIDE_NUMBER_SPINNER_CLASSES}`}
           />
            <label className="block text-gray-700 mb-1">
             Enter the property's acreage
@@ -303,8 +333,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             placeholder="property size in acres"
             onChange={handleChange}
             // ADDED: text-gray-900 and placeholder-gray-500 for consistency
-            className={BASE_INPUT_CLASSES}
-          />
+            className={`${BASE_INPUT_CLASSES} ${HIDE_NUMBER_SPINNER_CLASSES}`}          />
 
           <label className="block text-gray-700 mb-1">
             System Amperage

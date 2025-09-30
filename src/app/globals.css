@@ -24,3 +24,27 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/*
+ * Custom CSS to fix input type="number" behavior
+ * This forcibly hides the spinner arrows and disables scroll-to-change.
+ */
+
+/* Hide the arrows for Chrome, Safari, Edge */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide the arrows for Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Disable mousewheel increment while focused on the input */
+input[type='number']:focus {
+  /* This part is usually handled by the 'appearance: none;' combined with the vendor prefixes, */
+  /* but some browsers might need JavaScript for a 100% reliable scroll lock. */
+  /* The appearance fixes usually stop the scroll effect because the scroll is tied to the UI element. */
+}
