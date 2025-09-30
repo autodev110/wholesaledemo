@@ -40,10 +40,11 @@ interface AIInputSchema {
     };
     sale_stage?: "upset" | "judicial" | "sheriff" | "private";
   };
+  // CHANGE 1: end_buyer_target_margin_pct is no longer a fixed input
   cost_assumptions: {
     closing_costs: number;
+    holding_costs_pct_of_arv: number;
     wholesaler_min_profit: number;
-    end_buyer_target_margin_pct: number;
   };
 }
 
@@ -55,6 +56,8 @@ interface AIOutputSchema {
   decision: "GO" | "CONDITIONAL" | "NO_GO";
   risks_ranked: { risk: string; severity: "High" | "Medium" | "Low"; mitigation: string }[];
   lien_survivability_note?: string;
+  // CHANGE 2: Added field for the AI's condition assessment
+  estimated_condition?: "Good" | "Moderate" | "Poor";
 }
 
 // ==================================================================================
@@ -117,10 +120,11 @@ function buildInputJson(formData: any, propertyDetails: any): AIInputSchema {
       },
       sale_stage: formData.sale_stage ?? "private",
     },
+    // CHANGE 3: Removed the fixed margin from cost assumptions
     cost_assumptions: {
       closing_costs: 10000,
+      holding_costs_pct_of_arv: 0.03,
       wholesaler_min_profit: 40000,
-      end_buyer_target_margin_pct: 0.10,
     },
   };
 }
@@ -192,19 +196,23 @@ ${JSON.stringify(propertyDetails, null, 2)}
 export async function runAIAgent(formData: any, propertyDetails: any) {
   const inputJson = buildInputJson(formData, propertyDetails);
 
+  // CHANGE 4: Updated system prompt to ask for condition assessment
   const systemPrompt = `
-You are a disciplined real-estate wholesale underwriter for PA counties (expandable nationwide).
-Evaluate properties from tax sales and direct seller leads.
+You are a disciplined real-estate wholesale underwriter. Your role is to ANALYZE and ESTIMATE, not to perform final calculations.
 
 Your job:
-- Produce a defensible ARV from zestimate, **current listing price** (if available), last sale (use lastly, try to avoid), and condition adjustments.
-- Estimate rehab costs as line-items (roof, electrical, plumbing, foundation, cosmetics, etc.) with contingency.
-- Compute Wholesale MAO: (ARV × (1 - margin)) - Rehab - Closing Costs - Payoffs. 
-  Then Offer_to_Seller_Max = End Buyer MAO - Wholesaler Profit (≥ $50k).
-- Add lien survivability notes (Upset = liens survive, Judicial = free/clear, Sheriff = check, Private = standard).
-- Give a decision: "GO", "CONDITIONAL", or "NO_GO".
-- Rank risks with severity and mitigations.
-- Factor in property details, nearby school and neighborhood ratings, market trends, and economic conditions as relevant to your analysis as well.
+- Produce a defensible ARV (After Repair Value) with a low, base, and high estimate. Justify your reasoning based on provided data like listing price, zestimate, and property details.
+
+- Estimate rehab costs as detailed line-items (roof, cosmetics, etc.). Your estimate MUST be heavily influenced by the \`seller_provided_condition\` data.
+  - If the seller reports recent upgrades (e.g., 'new roof'), your rehab cost for that item should be minimal or zero.
+  - If the seller reports known issues or the property is old, budget for repairs accordingly.
+  - Always include a 10-15% contingency on the total rehab cost.
+
+- Based on all available data (seller's input, property age, and your own rehab estimate), classify the overall property condition. You must choose one of three options: "Good", "Moderate", or "Poor".
+
+- Add lien survivability notes based on the sale_stage.
+- Give a final investment decision: "GO", "CONDITIONAL", or "NO_GO".
+- Rank potential risks with severity ("High", "Medium", "Low") and suggest mitigations.
 
 Format:
 Respond with a single JSON object only.
@@ -212,17 +220,17 @@ Keys:
 - subject_summary { address }
 - arv { low, base, high, reasoning }
 - rehab { total, line_items[] }
-- deal_math { total_encumbrances, offer_to_seller_max, end_buyer_mao }
+- estimated_condition ("Good", "Moderate", or "Poor")
 - decision
 - risks_ranked[]
 - lien_survivability_note
-- general overview (analysis summary paragraph)
+- general_overview (a brief summary paragraph of your analysis)
 
-No extra commentary outside JSON.
+Do NOT include a 'deal_math' key in your response. All financial calculations will be handled separately. No extra commentary outside the JSON.
 `;
 
   const userPrompt = `
-Evaluate this property for wholesaling using our playbook.
+Analyze this property for a wholesale deal based on our playbook. Provide your estimates and analysis.
 Payload: ${JSON.stringify(inputJson)}
 `;
 
@@ -231,7 +239,6 @@ Payload: ${JSON.stringify(inputJson)}
     let responseText = result.response.text().trim();
     console.log("RAW GEMINI OUTPUT:", responseText);
 
-    // Strip Markdown if present
     responseText = responseText.replace(/```json/i, "").replace(/```/g, "").trim();
 
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -239,27 +246,62 @@ Payload: ${JSON.stringify(inputJson)}
 
     const raw = JSON.parse(jsonMatch[0]);
 
-    // Normalize to avoid crashes
+    // CHANGE 5: The entire calculation block is updated for dynamic margins
+
+    // 1. Get AI Estimates
+    const arvBase = raw.arv?.base ?? 0;
+    const rehabTotal = raw.rehab?.total ?? 0;
+    const condition = raw.estimated_condition;
+
+    // 2. Determine Dynamic End Buyer Margin based on AI's assessment
+    let endBuyerTargetMarginPct = 0.125; // Default to "Moderate" condition
+    switch (condition) {
+      case "Good":
+        endBuyerTargetMarginPct = 0.075; // 7.5% for properties in good shape
+        break;
+      case "Poor":
+        endBuyerTargetMarginPct = 0.175; // 17.5% for properties in poor shape
+        break;
+    }
+
+    // 3. Get Cost Assumptions from our input
+    const costs = inputJson.cost_assumptions;
+    const liens = inputJson.subject.known_liens_and_mortgage;
+
+    // 4. Perform Deterministic Calculations
+    const totalEncumbrances = liens.taxes_owed + liens.liens_owed + liens.mortgage_balance;
+    const holdingCosts = arvBase * costs.holding_costs_pct_of_arv;
+
+    const endBuyerMao =
+      arvBase * (1 - endBuyerTargetMarginPct) - // Use the new dynamic margin
+      rehabTotal -
+      costs.closing_costs -
+      holdingCosts;
+
+    const offerToSellerMax = endBuyerMao - costs.wholesaler_min_profit;
+
+    // 5. Assemble the final, complete analysis object
     const analysisResult: AIOutputSchema = {
       subject_summary: { address: raw.subject_summary?.address ?? "N/A" },
       arv: {
         low: raw.arv?.low ?? 0,
-        base: raw.arv?.base ?? 0,
+        base: arvBase,
         high: raw.arv?.high ?? 0,
         reasoning: raw.arv?.reasoning ?? "No reasoning provided",
       },
       rehab: {
-        total: raw.rehab?.total ?? 0,
+        total: rehabTotal,
         line_items: raw.rehab?.line_items ?? [],
       },
       deal_math: {
-        total_encumbrances: raw.deal_math?.total_encumbrances ?? 0,
-        offer_to_seller_max: raw.deal_math?.offer_to_seller_max ?? 0,
-        end_buyer_mao: raw.deal_math?.end_buyer_mao ?? 0,
+        total_encumbrances: totalEncumbrances,
+        offer_to_seller_max: offerToSellerMax,
+        end_buyer_mao: endBuyerMao,
       },
       decision: raw.decision ?? "NO_GO",
       risks_ranked: raw.risks_ranked ?? [],
       lien_survivability_note: raw.lien_survivability_note ?? "N/A",
+      estimated_condition: condition,
     };
 
     return {
