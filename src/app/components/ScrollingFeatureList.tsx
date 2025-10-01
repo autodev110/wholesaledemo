@@ -11,7 +11,7 @@ type CardData = {
 };
 
 export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const featureRefs = useRef<(HTMLDivElement | null)[]>([]);
   
   // 1. Use the mobile detection hook
