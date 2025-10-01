@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 // Define core site URL for canonical links and Open Graph meta tags
-const siteUrl = "https://www.simplehomeoffer.com"; // **IMPORTANT: Replace with your actual domain**
+const siteUrl = "https://www.simplehomeoffer.org"; // **IMPORTANT: Replace with your actual domain**
 
 export const metadata: Metadata = {
   // Primary SEO Tags

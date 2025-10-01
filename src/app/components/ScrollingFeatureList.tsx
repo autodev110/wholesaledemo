@@ -30,7 +30,7 @@ export default function ScrollingFeatureList({ data }: { data: CardData[] }) {
       let currentActiveIndex = 0;
       for (let i = featureRefs.current.length - 1; i >= 0; i--) {
         const feature = featureRefs.current[i];
-        if (feature && feature.offsetTop - 150 < scrollPosition) {
+        if (feature && feature.offsetTop - 50 < scrollPosition) {
             currentActiveIndex = i;
             break;
         }
