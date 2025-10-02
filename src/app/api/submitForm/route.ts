@@ -144,6 +144,7 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
+      cc: "domjulian31@gmail.com",  // Internal team email for dom
       subject: "New Property Lead + AI Appraisal",
       text: internalOutput,
     });
